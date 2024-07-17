@@ -6,9 +6,9 @@ function WhatOurClientsSay() {
       <section className="bg-muted py-12 px-6">
           <div className="max-w-5xl mx-auto">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold">What Our Clients Say</h2>
+              <h2 className="text-3xl font-bold">Lo que nuestros clientes dicen</h2>
               <a className="text-primary hover:underline" href="#">
-                Read More
+                Leer mas
               </a>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
