@@ -1,5 +1,5 @@
 import React from 'react';
-import Navbar from '../principals/Navbar';
+import Navbar from '../../components/principals/Navbar';
 
 const RegisterCurrentUser = () => {
   return (

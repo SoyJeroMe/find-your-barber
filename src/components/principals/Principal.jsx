@@ -1,7 +1,10 @@
-import React from 'react'
+import React, {useState, useEffect} from 'react'
+import logo from '../../img/logos/logo.png'
+import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
+import 'leaflet/dist/leaflet.css'
+import L from 'leaflet'
 import StylistsCardsMenu from '../principalPageComponents/StylistsCardsMenu'
 import WhatOurClientsSay from '../principalPageComponents/WhatOurClientsSay'
-import map from '../../img/mapa/map.jpg'
 import {
   FiScissors,
   FiUser,
@@ -12,18 +15,50 @@ import {
 } from 'react-icons/fi'
 import {FaArtstation} from 'react-icons/fa'
 
+// Importar imágenes de Leaflet
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+
+// Configurar íconos de Leaflet
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+})
+
 function Principal() {
+  const [location, setLocation] = useState(null)
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation([position.coords.latitude, position.coords.longitude])
+        },
+        (error) => {
+          console.error('Error obteniendo la ubicación:', error)
+          setLocation([51.505, -0.09]) // Valor predeterminado si no se puede obtener la ubicación
+        },
+      )
+    } else {
+      console.error('La geolocalización no es compatible con este navegador.')
+      setLocation([51.505, -0.09]) // Valor predeterminado si la geolocalización no es compatible
+    }
+  }, [])
+
   return (
     <div>
       <main className="flex-1">
         <section className="bg-muted py-12 px-6">
           <div className="max-w-3xl mx-auto space-y-4 text-center">
-            <h1 className="font-black text-6xl">
+            {/* <h1 className="font-black text-6xl">
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-black via-gray-700 to-purple-800">
                 Encuentra tu Estilo, Descubre a tu Experto.
               </span>
-            </h1>
+            </h1> */}
 
+            <img className="size-32 flex m-auto" src={logo} alt="" />
             <form className="flex items-center gap-4">
               <input
                 className="flex h-10 w-full border border-input bg-background text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 flex-1 rounded-md px-4 py-2 text-muted-foreground"
@@ -31,7 +66,7 @@ function Principal() {
                 type="text"
               />
               <button
-                className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 rounded-md px-6 py-2 bg-purple-800 text-white"
+                className="inline-flex items-center justify-center h-10 rounded-md px-6 py-2 bg-purple-800 text-white hover:bg-black"
                 type="submit"
               >
                 Search
@@ -98,7 +133,21 @@ function Principal() {
           </div>
         </section>
         <section className="flex justify-center mb-6">
-          <img className="h-[400px] w-[900px] rounded-2xl" src={map} alt="" />
+          {location && (
+            <MapContainer
+              center={location}
+              zoom={13}
+              style={{width: '900px', height: '400px'}}
+            >
+              <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
+              <Marker position={location}>
+                <Popup>Tu ubicación actual</Popup>
+              </Marker>
+            </MapContainer>
+          )}
         </section>
         <StylistsCardsMenu />
         <WhatOurClientsSay />
